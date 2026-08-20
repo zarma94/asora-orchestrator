@@ -1,0 +1,9 @@
+{
+  "_comment": "Client-instance stub. The 'orchestrator' meta-project is where router/converse jobs run (folder hub under DOCS_ROOT=/opt/orchestrator). Real projects are auto-created by the ingest router into PROJECTS_LOCAL (/opt/orchestrator/projects.local.json) - do not hand-edit this file on the box; it is overwritten on upgrade.",
+  "orchestrator": {
+    "folder": "hub",
+    "brain": "CLAUDE.md",
+    "ems_board": null,
+    "write_mode": "read-only"
+  }
+}

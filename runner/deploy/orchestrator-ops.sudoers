@@ -1,0 +1,31 @@
+# /etc/sudoers.d/orchestrator-ops     (install: root:root, chmod 0440)
+# Validate BEFORE relying on it:      visudo -cf /etc/sudoers.d/orchestrator-ops
+#
+# The dedicated ops executor user `orch-ops` may run ONLY these exact,
+# parameterless commands — the ops-runner verb routines. No wildcards, no shell,
+# nothing else. These lines MUST match the argvs in runner/src/ops.js (CMDS).
+# If `command -v npm|rsync|systemctl|env|sudo` differs on this box, update BOTH
+# this file and CMDS/PATHS in src/ops.js.
+
+Defaults:orch-ops    !requiretty
+Defaults:orch-ops    env_reset
+
+# --- verb: sync-restart ---
+# Refresh code from the READ-ONLY NC mount into the deploy dir, as the
+# `orchestrator` user (so files keep correct ownership).
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/rsync -a --delete /mnt/nextcloud/Orchestrator/runner/src/ /opt/orchestrator/runner/src/
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/rsync -a --delete /mnt/nextcloud/Orchestrator/runner/bin/ /opt/orchestrator/runner/bin/
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/rsync -a --delete /mnt/nextcloud/Orchestrator/runner/jobtypes/ /opt/orchestrator/runner/jobtypes/
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/rsync -a --delete /mnt/nextcloud/Orchestrator/runner/config/ /opt/orchestrator/runner/config/
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/rsync -a /mnt/nextcloud/Orchestrator/runner/package.json /opt/orchestrator/runner/package.json
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/npm install --omit=dev --prefix /opt/orchestrator/runner
+# Restart runner + api (root). NOTE: orchestrator-ops is deliberately absent —
+# the executor must survive the restart to record the job outcome.
+orch-ops ALL=(root) NOPASSWD: /usr/bin/systemctl restart orchestrator-runner orchestrator-api
+
+# --- verb: migrate ---
+# Idempotent `npm run migrate`, as the `orchestrator` user, with the real DB
+# creds from the root-owned env file that user can read.
+orch-ops ALL=(orchestrator) NOPASSWD: /usr/bin/env ORCH_ENV_FILE=/opt/orchestrator/.env /usr/bin/npm --prefix /opt/orchestrator/runner run migrate
+
+# (verb: status needs NO sudo — `systemctl is-active` is readable by any user.)

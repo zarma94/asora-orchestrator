@@ -1,0 +1,21 @@
+# Per-company Telegram bot instance. One process per bot; %i = BOT_NAME (an entry in
+# /opt/orchestrator/bots.json). All instances share the same Jobs API + brain backend.
+#   systemctl enable --now orchestrator-telegram@ceg
+[Unit]
+Description=ASORA Telegram bot (%i) — per-company, scoped
+After=network-online.target orchestrator-api.service
+Wants=orchestrator-api.service
+
+[Service]
+Type=simple
+User=orchestrator
+WorkingDirectory=/opt/orchestrator/runner
+EnvironmentFile=/opt/orchestrator/.env
+Environment=BOT_NAME=%i
+ExecStart=/usr/bin/node /opt/orchestrator/runner/src/telegram-listener.js
+Restart=always
+RestartSec=5
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

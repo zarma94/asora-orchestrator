@@ -1,0 +1,4 @@
+{
+  "_comment": "Per-company Telegram bots. ROOT-owned (chmod 640 root:orchestrator). Each key is a BOT_NAME; create the bot in @BotFather, paste its token, set chat_id to the OWNER's numeric id, list the projects it covers, and company (ceg/mzk/asora/SampleCo) for /newproject. Then: systemctl enable --now orchestrator-telegram@<name>. The default single bot (TELEGRAM_* in .env) still runs as orchestrator-telegram and covers ALL projects.",
+  "ceg": { "token": "PASTE_BOTFATHER_TOKEN", "chat_id": 0, "company": "ceg", "projects": ["Sample Project","ceg-stake","Sample Project B","SampleRegion-rwa","ceg-broker","ceg-setup"], "label": "ACME" }
+}

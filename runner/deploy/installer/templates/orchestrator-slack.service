@@ -1,0 +1,18 @@
+# ASORA Slack front-end (Socket Mode — no public endpoint). Shares the Jobs API + brain.
+[Unit]
+Description=ASORA Slack listener (Socket Mode)
+After=network-online.target orchestrator-api.service
+Wants=orchestrator-api.service
+
+[Service]
+Type=simple
+User=orchestrator
+WorkingDirectory=/opt/orchestrator/runner
+EnvironmentFile=/opt/orchestrator/.env
+ExecStart=/usr/bin/node /opt/orchestrator/runner/src/slack-listener.js
+Restart=always
+RestartSec=5
+MemoryMax=384M
+
+[Install]
+WantedBy=multi-user.target

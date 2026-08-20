@@ -1,0 +1,23 @@
+# ASORA ingest instance — job runner + scheduler. Resource-capped: this box may
+# host other production stacks (e.g. the ACME EMS) — never starve them.
+[Unit]
+Description=ASORA runner (claude -p job executor + scheduler)
+After=network-online.target orchestrator-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orchestrator/runner
+Environment=ORCH_ENV_FILE=/opt/orchestrator/.env
+ExecStart=/usr/bin/node src/runner-main.js
+Restart=always
+RestartSec=10
+User=orchestrator
+Group=orchestrator
+NoNewPrivileges=true
+PrivateTmp=true
+MemoryMax=3G
+CPUQuota=150%
+
+[Install]
+WantedBy=multi-user.target

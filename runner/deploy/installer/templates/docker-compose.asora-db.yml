@@ -1,0 +1,18 @@
+# Postgres for the ASORA ingest instance — loopback only, unique port/name/volume so
+# it can never clash with an existing stack (e.g. the ACME EMS) on the same box.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: asora-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: asora
+      POSTGRES_USER: asora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in /opt/orchestrator/.env.compose}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - asora-pgdata:/var/lib/postgresql/data
+
+volumes:
+  asora-pgdata:

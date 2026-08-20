@@ -1,0 +1,25 @@
+# secrets & env
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+id_*
+*credential*
+rclone.conf
+secrets/
+# data / brain / memory (never commit)
+brain/
+memory/
+data/
+holding/
+projects/*/wiki/
+approved-answers/
+jobs/
+logs/
+*.log
+dist/
+# deps
+node_modules/
+*.bak
+*.bak-*

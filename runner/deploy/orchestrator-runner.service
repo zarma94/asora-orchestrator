@@ -1,0 +1,22 @@
+# /etc/systemd/system/orchestrator-runner.service
+# Runs the job loop + scheduler tick in one process. Needs: the NC mount (read-
+# only), the claude CLI on PATH, ~/.mail tooling for mail-triage.
+[Unit]
+Description=Orchestrator runner (claude -p job executor + scheduler)
+After=network-online.target orchestrator-api.service mnt-nextcloud.mount
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orchestrator/runner
+Environment=ORCH_ENV_FILE=/opt/orchestrator/.env
+ExecStart=/usr/bin/node src/runner-main.js
+Restart=always
+RestartSec=10
+User=orchestrator
+Group=orchestrator
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+{
+  "_comment": "Slack channel -> scope. ROOT-owned (chmod 640 root:orchestrator). Get a channel id from Slack (channel name -> View channel details -> ID at the bottom, C0XXXXXX). kind: 'project' (one project), 'company' (the CEO channel: /do delegates, ask/propose span its projects), 'holding' (everything). Invite the bot to each channel.",
+  "C0EXAMPLE": { "kind": "company", "company": "ceg", "projects": ["Sample Project","ceg-stake","SampleRegion-rwa","Sample Project B","ceg-broker","ceg-setup"], "label": "ACME" }
+}

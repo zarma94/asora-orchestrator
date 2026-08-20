@@ -1,0 +1,18 @@
+# ASORA ingest instance — Telegram listener (optional; only enabled when a token is set)
+[Unit]
+Description=ASORA Telegram listener (owner-only chat + document ingest)
+After=network-online.target orchestrator-api.service
+Wants=orchestrator-api.service
+
+[Service]
+Type=simple
+User=orchestrator
+WorkingDirectory=/opt/orchestrator/runner
+EnvironmentFile=/opt/orchestrator/.env
+ExecStart=/usr/bin/node /opt/orchestrator/runner/src/telegram-listener.js
+Restart=always
+RestartSec=5
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,22 @@
+# /etc/systemd/system/orchestrator-api.service
+[Unit]
+Description=Orchestrator Jobs API (127.0.0.1 only; nginx terminates TLS)
+After=network-online.target postgresql.service docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orchestrator/runner
+Environment=ORCH_ENV_FILE=/opt/orchestrator/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+User=orchestrator
+Group=orchestrator
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/orchestrator
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

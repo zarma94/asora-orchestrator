@@ -1,0 +1,19 @@
+# Postgres for the Jobs API — internal only, never published beyond localhost.
+# After `up`, re-scan externally: 5432 MUST stay closed (Docker-UFW trap — see
+# ASORA/clients/ACME/ops/SERVER.md post-deploy verification).
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: orchestrator-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: orchestrator
+      POSTGRES_USER: orchestrator
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in /opt/orchestrator/.env.compose}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - orchestrator-pgdata:/var/lib/postgresql/data
+
+volumes:
+  orchestrator-pgdata:

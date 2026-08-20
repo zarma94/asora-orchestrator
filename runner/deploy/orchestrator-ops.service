@@ -1,0 +1,33 @@
+# /etc/systemd/system/orchestrator-ops.service
+# Ops-runner executor. Runs as the DEDICATED NON-ROOT user `orch-ops` (NOT the
+# orchestrator API/runner user). Polls ops_jobs, runs the vetted verb allow-list
+# (status / sync-restart / migrate) via the scoped sudoers. Its env is
+# /opt/orchestrator/ops.env — DATABASE_URL only, no ORCH_RUNNER_KEY / OPS_API_KEY
+# / EMS / Telegram / Anthropic secret.
+[Unit]
+Description=Orchestrator ops-runner executor (vetted verb allow-list; sudo-scoped)
+After=network-online.target orchestrator-api.service postgresql.service docker.service mnt-nextcloud.mount
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orchestrator/runner
+Environment=ORCH_ENV_FILE=/opt/orchestrator/ops.env
+ExecStart=/usr/bin/node src/ops-main.js
+Restart=always
+RestartSec=10
+User=orch-ops
+Group=orch-ops
+
+# Sandbox. NoNewPrivileges MUST be false — the executor escalates via the scoped
+# sudoers for the two destructive verbs. ProtectSystem=strict keeps the whole FS
+# read-only except the paths below; the sudo children (rsync/npm as the
+# orchestrator user) need /opt/orchestrator writable to refresh the deploy dir.
+NoNewPrivileges=false
+ProtectSystem=strict
+ReadWritePaths=/opt/orchestrator
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

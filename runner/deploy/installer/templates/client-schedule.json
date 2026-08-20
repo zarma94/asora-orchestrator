@@ -1,0 +1,15 @@
+{
+  "timezone": "Europe/Ljubljana",
+  "_note": "Client ingest instance: the hourly sweep is the only recurring job. It batches INGEST_SOURCE_DIRS into the inbox, chains the governed ingest, and self-requeues until the corpus is drained; changed files re-sweep automatically (latest-wins in the brain).",
+  "entries": [
+    {
+      "id": "ingest-sweep",
+      "type": "ingest-sweep",
+      "project": "orchestrator",
+      "every": "hour",
+      "minute": 5,
+      "priority": 5,
+      "prompt": "Hourly document sweep."
+    }
+  ]
+}

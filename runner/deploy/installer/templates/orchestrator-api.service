@@ -1,0 +1,23 @@
+# ASORA ingest instance — Jobs API (loopback only; no TLS/nginx needed unless exposed)
+[Unit]
+Description=ASORA Jobs API (127.0.0.1 only)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/orchestrator/runner
+Environment=ORCH_ENV_FILE=/opt/orchestrator/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+User=orchestrator
+Group=orchestrator
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/orchestrator
+PrivateTmp=true
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

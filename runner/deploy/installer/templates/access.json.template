@@ -1,0 +1,8 @@
+{
+  "_comment": "HARDCODED access rules — ROOT-OWNED (chmod 640 root:orchestrator). The runner can read but NEVER write this file; only an admin edits it. Missing file = owner-only (fail-closed). Roles list the projects a principal may ASK about and which page access levels they may see (pages default to 'internal'; levels: public < sales < internal < management). Map principals by telegram chat id, or by sha256 hex of an API key (generate: echo -n \"<key>\" | sha256sum).",
+  "roles": {
+    "sales": { "projects": ["EXAMPLE-project-slug"], "clearance": ["public", "sales"], "actions": ["ask"] }
+  },
+  "telegram": {},
+  "api_keys": {}
+}
